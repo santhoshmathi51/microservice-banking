@@ -1,0 +1,34 @@
+package com.example.user_service.Exception;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
+
+@ControllerAdvice
+public class GlobalException {
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<String> handleUsernameNotFound(UsernameNotFoundException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<String> handleResponseStatus(ResponseStatusException e) {
+        return new ResponseEntity<>(e.getReason(), e.getStatusCode());
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<String> handleNoResource(NoResourceFoundException e) {
+        return new ResponseEntity<>("Route not found: " + e.getResourcePath(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleGeneral(Exception e) {
+        return new ResponseEntity<>("Internal error: " + e.getMessage(),
+                HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+}
